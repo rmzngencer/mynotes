@@ -1,35 +1,17 @@
-
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mynotes/views/login_view.dart';
-import 'firebase_options.dart';
+import 'package:mynotes/firebase_options.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(
-    MaterialApp(
-      title: 'mynotes',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const LoginView(),
-    ),
-  );
-}
-
-
-class RegisterView extends StatefulWidget {
-  const RegisterView({super.key});
+class LoginView extends StatefulWidget {
+  const LoginView({super.key});
 
   @override
-  State<RegisterView> createState() => _RegisterViewStateState();
+  State<LoginView> createState() => _LoginViewState();
 }
 
-class _RegisterViewStateState extends State<RegisterView> {
-
+class _LoginViewState extends State<LoginView> {
+  @override
   late final TextEditingController _email;
   late final TextEditingController _password;
 
@@ -46,11 +28,12 @@ class _RegisterViewStateState extends State<RegisterView> {
     _password.dispose();
     super.dispose();
   }
-   @override
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Register'),
+        title: const Text('LogIn'),
         backgroundColor: const Color.fromARGB(255, 194, 180, 218),
       ),
       body: FutureBuilder(
@@ -84,21 +67,29 @@ class _RegisterViewStateState extends State<RegisterView> {
                     onPressed: () async {
                       final email = _email.text;
                       final password = _password.text;
-                      
 
-                      
-
-
-                      final userCredential = await FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                        email: email,
-                        password: password,
-                      );
-
-                      print(userCredential);
+                      try {
+                        final userCredential = await FirebaseAuth.instance
+                            .signInWithEmailAndPassword(
+                          email: email,
+                          password: password,
+                        );
+                        print(userCredential);
+                        
+                      } on FirebaseAuthException catch (e) {
+                        if (e.code == 'user-not-found') {
+                          print('No user found for that email.');
+                        } else if (e.code == 'wrong-password') {
+                          print('Wrong password provided for that user.');
+                        } else {
+                          print("hata: $e");
+                        }
+                      }
                     },
-                    child: const Text('Register', style: TextStyle(color: Color.fromARGB(255, 148, 20, 20)),),
-                
+                    child: const Text(
+                      'login',
+                      style: TextStyle(color: Color.fromARGB(255, 148, 20, 20)),
+                    ),
                   ),
                 ],
               );
@@ -110,4 +101,8 @@ class _RegisterViewStateState extends State<RegisterView> {
     );
   }
 }
+  // late  mean is I am not ready for this variable now but I will be ready later
 
+  
+
+ 
