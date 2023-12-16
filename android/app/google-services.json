@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "418219686700",
+    "project_id": "mynotes-a154c",
+    "storage_bucket": "mynotes-a154c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:418219686700:android:8395ae7c68b58d845e8a89",
+        "android_client_info": {
+          "package_name": "com.canof.mynotes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCV3gEYXrwRng45GkoSboRhsNqwiBqigXo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
