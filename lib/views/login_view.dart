@@ -11,7 +11,6 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  @override
   late final TextEditingController _email;
   late final TextEditingController _password;
 
