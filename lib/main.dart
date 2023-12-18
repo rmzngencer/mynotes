@@ -18,8 +18,10 @@ void main() {
       ),
       home: const HomePage(),
       routes: {
+
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView(),
+        '/notes/': (context) => const NotesView(),
       },
     ),
   );
@@ -40,15 +42,15 @@ class HomePage extends StatelessWidget {
             final user = FirebaseAuth.instance.currentUser;
             if (user != null) {
               if (user.emailVerified) {
-                print("Email is verified");
+                devtools.log("Email is verified");
               } else {
-                print("Email is not verified");
+                devtools.log("Email is not verified");
                 return const VerifyEmailView();
               }
             } else {
-              return LoginView();
+              return const LoginView();
             }
-            return const notesView();
+            return const NotesView();
           default:
             return const CircularProgressIndicator();
         }
@@ -59,14 +61,14 @@ class HomePage extends StatelessWidget {
 
 enum MenuAction { logout }
 
-class notesView extends StatefulWidget {
-  const notesView({super.key});
+class NotesView extends StatefulWidget {
+  const NotesView({super.key});
 
   @override
-  State<notesView> createState() => _noteseViewState();
+  State<NotesView> createState() => _noteseViewState();
 }
 
-class _noteseViewState extends State<notesView> {
+class _noteseViewState extends State<NotesView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +83,6 @@ class _noteseViewState extends State<notesView> {
                 devtools.log(shouldLogout.toString());
                 if (shouldLogout) {
                   await FirebaseAuth.instance.signOut();
-                  
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     '/login/',
                     (_) => false,
