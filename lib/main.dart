@@ -15,6 +15,11 @@ void main() {
         useMaterial3: true,
       ),
       home: const HomePage(),
+      routes: {
+        '/login/': (context) => const LoginView(),
+        '/register/': (context) => const RegisterView(),
+      },
+
     ),
   );
 }
@@ -24,31 +29,20 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home Page'),
-        backgroundColor: const Color.fromARGB(255, 194, 180, 218),
-      ),
-      body: FutureBuilder(
+    return FutureBuilder(
         future: Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,
         ),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              final user = FirebaseAuth.instance.currentUser;
-              
-                if (user?.emailVerified ?? false){
-                  print("Yu are virified user");
-                }else{
-                  print("You are not verified user");
-                }
-              return const Text("dane");
+              return LoginView();
             default:
-              return const Text("loading");
+              return const CircularProgressIndicator();
           }
         },
-      ),
-    );
+      );
+   
   }
 }
+
