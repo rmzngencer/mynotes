@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constans/routes.dart';
+import 'package:mynotes/services/auth/auth_exception.dart';
+import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/utilities/show_error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
@@ -61,28 +62,34 @@ class _RegisterViewStateState extends State<RegisterView> {
               final password = _password.text;
 
               try {
-                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                await AuthService.firebase().creatUser(
                   email: email,
                   password: password,
                 );
-                final user = FirebaseAuth.instance.currentUser;
-                await user?.sendEmailVerification();
+                AuthService.firebase().sendEmailVerification();
                 Navigator.of(context).pushNamed(
                   verifyEmailRoute,
-                  
                 );
-              } on FirebaseAuthException catch (e) {
-                if (e.code == 'weak-password') {
-                  showErrorDialog(context, 'weak-paswwrod');
-                } else if (e.code == 'email-already-in-use') {
-                  showErrorDialog(context, 'E mail is already in use');
-                } else if (e.code == 'invalid-email') {
-                  showErrorDialog(context, 'this is invalid email address');
-                } else {
-                  showErrorDialog(context, 'Error: ${e.code}');
-                }
-              } catch (e) {
-                showErrorDialog(context, e.toString());
+              } on WeakPasswordException {
+                await showErrorDialog(
+                  context,
+                  'The password provided is too weak.',
+                );
+              } on EmailAlreadyInUseException {
+                showErrorDialog(
+                  context,
+                  'The account already exists for that email.',
+                );
+              } on InvalidEmailException {
+                showErrorDialog(
+                  context,
+                  'The email address is not valid.',
+                );
+              } on GenericAuthException {
+                showErrorDialog(
+                  context,
+                  'An unknown error occurred.',
+                );
               }
             },
             child: const Text(
