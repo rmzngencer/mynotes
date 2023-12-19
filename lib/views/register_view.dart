@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtools show log;
-
 import 'package:mynotes/constans/routes.dart';
-
+import 'package:mynotes/utilities/show_error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -32,13 +30,12 @@ class _RegisterViewStateState extends State<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
-    
-   return Scaffold(
-    appBar: AppBar(
-      title: const Text('Register'),
-      backgroundColor: const Color.fromARGB(255, 194, 180, 218),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Register'),
+        backgroundColor: const Color.fromARGB(255, 194, 180, 218),
       ),
-       body: Column(
+      body: Column(
         children: [
           TextField(
             controller: _email,
@@ -62,22 +59,30 @@ class _RegisterViewStateState extends State<RegisterView> {
             onPressed: () async {
               final email = _email.text;
               final password = _password.text;
-      
+
               try {
-                final userCredential =
                     await FirebaseAuth.instance.createUserWithEmailAndPassword(
                   email: email,
                   password: password,
                 );
-                devtools.log(userCredential.toString());
+                final user = FirebaseAuth.instance.currentUser;
+                await user?.sendEmailVerification();
+                Navigator.of(context).pushNamed(
+                  verifyEmailRoute,
+                  
+                );
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'weak-password') {
-                  devtools.log('The password provided is too weak.');
+                  showErrorDialog(context, 'weak-paswwrod');
                 } else if (e.code == 'email-already-in-use') {
-                  devtools.log('The account already exists for that email.');
+                  showErrorDialog(context, 'E mail is already in use');
                 } else if (e.code == 'invalid-email') {
-                  devtools.log('The email address is not valid.');
+                  showErrorDialog(context, 'this is invalid email address');
+                } else {
+                  showErrorDialog(context, 'Error: ${e.code}');
                 }
+              } catch (e) {
+                showErrorDialog(context, e.toString());
               }
             },
             child: const Text(
@@ -85,12 +90,12 @@ class _RegisterViewStateState extends State<RegisterView> {
               style: TextStyle(color: Color.fromARGB(255, 148, 20, 20)),
             ),
           ),
-          TextButton(onPressed: (){
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                        loginRoute, 
-                        (route) => false);
-          },
-           child: const Text("Already registered? Login  "))
+          TextButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil(loginRoute, (route) => false);
+              },
+              child: const Text("Already registered? Login  "))
         ],
       ),
     );
