@@ -80,7 +80,7 @@ class MockAuthProvider implements AuthProvider {
     if (!isInitialized) {
       throw UnimplementedError();
     }
-    Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     return login(
       email: email,
       password: password,
@@ -101,7 +101,7 @@ class MockAuthProvider implements AuthProvider {
     required String email,
     required String password,
   }) {
-    if (isInitialized) throw NotInitilazeException();
+    if (!isInitialized) throw NotInitilazeException();
     if (email == 'foo@bar.com') throw UserNotFoundException();
     const user = AuthUser(false);
     _user = user;
