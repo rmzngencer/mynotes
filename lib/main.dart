@@ -6,7 +6,6 @@ import 'package:mynotes/views/notes_view.dart';
 import 'package:mynotes/views/register_view.dart';
 import 'package:mynotes/views/verify_email_viev.dart';
 
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
@@ -33,7 +32,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: AuthService.firebase().initialize(), 
+      future: AuthService.firebase().initialize(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
@@ -42,13 +41,12 @@ class HomePage extends StatelessWidget {
               if (user.isEmailVerified) {
                 return const NotesView();
               } else {
-                
                 return const VerifyEmailView();
               }
             } else {
               return const LoginView();
             }
-            
+
           default:
             return const CircularProgressIndicator();
         }
@@ -56,5 +54,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
-
