@@ -287,7 +287,7 @@ class DatabeseNote {
     required this.text,
     required this.isSyncedWithCloud,
   });
-
+ 
   DatabeseNote.fromRow(Map<String, dynamic> map)
       : id = map['idColum'] as int,
         userId = map['userIdColum'] as int,
